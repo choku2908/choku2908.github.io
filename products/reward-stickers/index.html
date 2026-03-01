@@ -26,13 +26,19 @@
     }
     nav .inner {
       max-width: 800px; margin: 0 auto;
-      display: flex; align-items: center; gap: 16px;
+      display: flex; align-items: center; justify-content: space-between;
     }
+    nav .nav-left { display: flex; align-items: center; gap: 16px; }
     nav a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color .2s; }
     nav a:hover { color: #fff; }
     nav .logo { font-size: 18px; font-weight: 700; color: #fff; }
     nav .logo span { color: var(--accent); }
     nav .sep { color: #333; }
+    .lang-toggle {
+      padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+      border: 1px solid #333; color: #888; background: transparent; cursor: pointer; transition: all .2s;
+    }
+    .lang-toggle:hover { border-color: var(--accent); color: #fff; }
 
     main { max-width: 800px; margin: 0 auto; padding: 48px 24px 80px; }
 
@@ -103,6 +109,11 @@
       font-size: 13px; color: #555;
     }
 
+    [data-lang] { display: none; }
+    [data-lang].show { display: initial; }
+    h1 [data-lang].show, h2 [data-lang].show { display: inline; }
+    p[data-lang].show, div[data-lang].show, ul[data-lang].show { display: block; }
+
     @media (max-width: 640px) {
       h1 { font-size: 32px; }
       .phone-frame { width: 240px; }
@@ -112,9 +123,12 @@
 <body>
   <nav>
     <div class="inner">
-      <a href="/" class="logo"><span>SSJ</span></a>
-      <span class="sep">/</span>
-      <a href="/products/reward-stickers/">Reward Stickers</a>
+      <div class="nav-left">
+        <a href="/" class="logo"><span>SSJ</span></a>
+        <span class="sep">/</span>
+        <a href="/products/reward-stickers/">Reward Stickers</a>
+      </div>
+      <button class="lang-toggle" onclick="toggleLang()">KO</button>
     </div>
   </nav>
 
@@ -122,13 +136,23 @@
     <div class="hero-icon">&#127760;</div>
     <h1>Reward Stickers</h1>
 
-    <p class="tagline">Introducing Reward Sticker &ndash; the ultimate app for fostering positive habits and achievements!</p>
-    <p class="desc">Whether you're a parent motivating your child or friends encouraging each other, this app lets you grant virtual stickers on a digital board for completing tasks or reaching goals.</p>
-    <p class="desc">Customize your sticker collection, track progress, and celebrate successes together.</p>
-    <p class="desc">Cultivate a culture of encouragement and accomplishment with Reward Sticker &ndash; making every achievement a sticker-worthy moment!</p>
+    <p class="tagline" data-lang="en">Introducing Reward Sticker &ndash; the ultimate app for fostering positive habits and achievements!</p>
+    <p class="tagline" data-lang="ko">칭찬 스티커를 소개합니다 &ndash; 긍정적인 습관과 성취를 키워주는 최고의 앱!</p>
 
-    <h2>When is it useful?</h2>
-    <ul>
+    <p class="desc" data-lang="en">Whether you're a parent motivating your child or friends encouraging each other, this app lets you grant virtual stickers on a digital board for completing tasks or reaching goals.</p>
+    <p class="desc" data-lang="ko">자녀에게 동기를 부여하는 부모든, 서로를 격려하는 친구든, 이 앱은 과제를 완료하거나 목표를 달성할 때마다 디지털 보드에 가상 스티커를 부여할 수 있게 해줍니다.</p>
+
+    <p class="desc" data-lang="en">Customize your sticker collection, track progress, and celebrate successes together.</p>
+    <p class="desc" data-lang="ko">나만의 스티커 컬렉션을 꾸미고, 진행 상황을 추적하며, 함께 성공을 축하하세요.</p>
+
+    <p class="desc" data-lang="en">Cultivate a culture of encouragement and accomplishment with Reward Sticker &ndash; making every achievement a sticker-worthy moment!</p>
+    <p class="desc" data-lang="ko">칭찬 스티커와 함께 격려와 성취의 문화를 만들어 가세요 &ndash; 모든 성취가 스티커를 받을 만한 순간이 됩니다!</p>
+
+    <h2>
+      <span data-lang="en">When is it useful?</span>
+      <span data-lang="ko">언제 유용한가요?</span>
+    </h2>
+    <ul data-lang="en">
       <li>Achieving goals through stickers everyday</li>
       <li>Works regardless of who you are
         <ul>
@@ -139,15 +163,32 @@
       </li>
       <li>Share your achievements for better motivation</li>
     </ul>
+    <ul data-lang="ko">
+      <li>매일 스티커를 통해 목표 달성</li>
+      <li>누구에게나 효과적
+        <ul>
+          <li>학생</li>
+          <li>성인</li>
+          <li>부모</li>
+        </ul>
+      </li>
+      <li>더 나은 동기부여를 위해 성취를 공유하세요</li>
+    </ul>
 
-    <h2>How does it look?</h2>
+    <h2>
+      <span data-lang="en">How does it look?</span>
+      <span data-lang="ko">어떻게 생겼나요?</span>
+    </h2>
     <div class="screenshot-wrap">
       <div class="phone-frame">
         <img src="screenshot.png" alt="Reward Stickers app screenshot">
       </div>
     </div>
 
-    <h2>Where to get it</h2>
+    <h2>
+      <span data-lang="en">Where to get it</span>
+      <span data-lang="ko">다운로드</span>
+    </h2>
     <div class="store-links">
       <a href="https://apps.apple.com/app/6471999282" target="_blank" class="store-link">
         <div class="badge ios">&#63743;</div>
@@ -155,11 +196,43 @@
       </a>
       <a href="https://play.google.com/store/apps/details?id=com.ssj.rewardstickers" target="_blank" class="store-link">
         <div class="badge android">&#9654;</div>
-        <div class="label"><strong>Android</strong> &mdash; Google Play <span class="coming">(Coming Soon)</span></div>
+        <div class="label">
+          <strong>Android</strong> &mdash; Google Play
+          <span class="coming" data-lang="en">(Coming Soon)</span>
+          <span class="coming" data-lang="ko">(출시 예정)</span>
+        </div>
       </a>
     </div>
   </main>
 
   <footer>&copy; 2024 SSJ - Sleek Software Journey</footer>
+
+  <script>
+    function detectKo() {
+      var langs = (navigator.languages || [navigator.language || navigator.userLanguage || 'en']);
+      for (var i = 0; i < langs.length; i++) {
+        if (langs[i].toLowerCase().indexOf('ko') === 0) return true;
+      }
+      try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Seoul') return true; } catch(e) {}
+      return false;
+    }
+
+    var currentLang = detectKo() ? 'ko' : 'en';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-lang]').forEach(function(el) {
+        el.classList.toggle('show', el.getAttribute('data-lang') === lang);
+      });
+      document.querySelector('.lang-toggle').textContent = lang === 'ko' ? 'EN' : 'KO';
+    }
+
+    function toggleLang() {
+      applyLang(currentLang === 'ko' ? 'en' : 'ko');
+    }
+
+    applyLang(currentLang);
+  </script>
 </body>
 </html>

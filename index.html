@@ -4,80 +4,57 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SSJ - Sleek Software Journey</title>
-  <meta name="description" content="SSJ crafts innovative apps that redefine everyday experiences. Explore our world of technology where creativity meets precision.">
+  <meta name="description" content="SSJ crafts innovative apps that redefine everyday experiences.">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
-      --bg: #111111;
-      --bg-card: #1a1a1a;
-      --text: #e0e0e0;
-      --text-muted: #888;
-      --accent: #6c63ff;
-      --accent-glow: rgba(108, 99, 255, 0.3);
-      --border: #2a2a2a;
-      --max-w: 960px;
+      --bg: #111111; --bg-card: #1a1a1a; --text: #e0e0e0; --text-muted: #888;
+      --accent: #6c63ff; --accent-glow: rgba(108,99,255,0.3); --border: #2a2a2a; --max-w: 960px;
     }
-
     html { scroll-behavior: smooth; }
-
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: var(--bg); color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
+      line-height: 1.7; -webkit-font-smoothing: antialiased;
     }
-
-    /* ── Nav ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      background: rgba(17,17,17,0.8);
-      border-bottom: 1px solid var(--border);
+      background: rgba(17,17,17,0.8); border-bottom: 1px solid var(--border);
     }
     nav .inner {
-      max-width: var(--max-w); margin: 0 auto;
-      padding: 16px 24px;
+      max-width: var(--max-w); margin: 0 auto; padding: 16px 24px;
       display: flex; align-items: center; justify-content: space-between;
     }
     nav .logo { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: #fff; text-decoration: none; }
     nav .logo span { color: var(--accent); }
+    nav .nav-right { display: flex; align-items: center; gap: 24px; }
     nav ul { list-style: none; display: flex; gap: 28px; }
     nav ul a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color .2s; }
     nav ul a:hover { color: #fff; }
-
-    /* ── Hero ── */
+    .lang-toggle {
+      padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+      border: 1px solid #333; color: #888; background: transparent; cursor: pointer; transition: all .2s;
+    }
+    .lang-toggle:hover { border-color: var(--accent); color: #fff; }
     .hero {
-      min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 120px 24px 80px;
+      min-height: 100vh; display: flex; align-items: center; padding: 120px 24px 80px;
     }
     .hero .inner { max-width: var(--max-w); margin: 0 auto; width: 100%; }
     .hero .badge {
-      display: inline-block;
-      padding: 6px 16px; border-radius: 20px;
+      display: inline-block; padding: 6px 16px; border-radius: 20px;
       background: var(--accent-glow); color: var(--accent);
-      font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
-      margin-bottom: 24px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 24px;
     }
     .hero h1 {
-      font-size: clamp(40px, 7vw, 72px);
-      font-weight: 800; line-height: 1.1;
-      letter-spacing: -2px; color: #fff;
-      margin-bottom: 32px;
+      font-size: clamp(40px, 7vw, 72px); font-weight: 800; line-height: 1.1;
+      letter-spacing: -2px; color: #fff; margin-bottom: 32px;
     }
     .hero h1 .gradient {
       background: linear-gradient(135deg, var(--accent), #a78bfa, #ec4899);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .hero p {
-      font-size: 18px; color: var(--text-muted);
-      max-width: 640px; margin-bottom: 16px;
-    }
-
-    /* ── Sections ── */
+    .hero p { font-size: 18px; color: var(--text-muted); max-width: 640px; margin-bottom: 16px; }
     section { padding: 100px 24px; }
     section .inner { max-width: var(--max-w); margin: 0 auto; }
     .section-label {
@@ -85,20 +62,13 @@
       color: var(--accent); margin-bottom: 12px;
     }
     section h2 {
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 700; color: #fff; letter-spacing: -1px;
-      margin-bottom: 40px; line-height: 1.2;
+      font-size: clamp(28px, 4vw, 42px); font-weight: 700; color: #fff;
+      letter-spacing: -1px; margin-bottom: 40px; line-height: 1.2;
     }
-
-    /* ── What I Do ── */
-    .what-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
+    .what-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
     .what-card {
       background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 32px;
-      transition: border-color .3s, transform .3s;
+      border-radius: 16px; padding: 32px; transition: border-color .3s, transform .3s;
     }
     .what-card:hover { border-color: var(--accent); transform: translateY(-4px); }
     .what-card .icon {
@@ -108,81 +78,56 @@
     }
     .what-card h3 { font-size: 18px; color: #fff; margin-bottom: 12px; }
     .what-card p { font-size: 15px; color: var(--text-muted); }
-
-    /* ── Products ── */
     .products-section { background: var(--bg-card); }
     .product-list { display: flex; flex-direction: column; gap: 20px; }
     .product-item {
       display: flex; align-items: center; gap: 20px;
       background: var(--bg); border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px 32px;
-      transition: border-color .3s, transform .3s;
+      border-radius: 16px; padding: 28px 32px; transition: border-color .3s, transform .3s;
+      text-decoration: none; color: inherit;
     }
     .product-item:hover { border-color: var(--accent); transform: translateX(8px); }
     .product-icon {
       width: 56px; height: 56px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;
     }
     .product-icon.sticker { background: linear-gradient(135deg, #34d399, #06b6d4); }
     .product-icon.todry { background: linear-gradient(135deg, #f59e0b, #ef4444); }
     .product-info h3 { font-size: 20px; color: #fff; margin-bottom: 4px; }
     .product-info p { font-size: 14px; color: var(--text-muted); }
-    .coming-soon {
-      text-align: center; margin-top: 32px;
-      font-size: 16px; color: var(--text-muted); font-style: italic;
-    }
-
-    /* ── Legal ── */
-    .legal-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-    .legal-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 32px;
-    }
+    .coming-soon { text-align: center; margin-top: 32px; font-size: 16px; color: var(--text-muted); font-style: italic; }
+    .legal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    .legal-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; }
     .legal-card h3 { font-size: 18px; color: #fff; margin-bottom: 16px; }
     .legal-card a {
-      display: block; padding: 10px 0;
-      color: var(--text-muted); text-decoration: none;
-      font-size: 15px; transition: color .2s;
-      border-bottom: 1px solid var(--border);
+      display: block; padding: 10px 0; color: var(--text-muted); text-decoration: none;
+      font-size: 15px; transition: color .2s; border-bottom: 1px solid var(--border);
     }
     .legal-card a:last-child { border-bottom: none; }
     .legal-card a:hover { color: var(--accent); }
     .legal-card a .arrow { float: right; }
-
-    /* ── Contact ── */
     .contact-section { text-align: center; }
     .contact-section h2 { margin-bottom: 16px; }
     .contact-section .sub { color: var(--text-muted); font-size: 16px; margin-bottom: 32px; }
     .contact-email {
-      display: inline-block;
-      padding: 16px 40px; border-radius: 12px;
-      background: var(--accent); color: #fff;
-      font-size: 16px; font-weight: 600; text-decoration: none;
-      transition: opacity .2s, transform .2s;
+      display: inline-block; padding: 16px 40px; border-radius: 12px;
+      background: var(--accent); color: #fff; font-size: 16px; font-weight: 600;
+      text-decoration: none; transition: opacity .2s, transform .2s;
     }
     .contact-email:hover { opacity: .9; transform: scale(1.03); }
-
-    /* ── Footer ── */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 24px; text-align: center;
+      border-top: 1px solid var(--border); padding: 40px 24px; text-align: center;
       font-size: 13px; color: var(--text-muted);
     }
     footer a { color: var(--text-muted); text-decoration: none; margin: 0 12px; }
     footer a:hover { color: #fff; }
-
-    /* ── Fade-in animation ── */
-    .fade-in {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity .6s ease, transform .6s ease;
-    }
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-    /* ── Responsive ── */
+    [data-lang] { display: none; }
+    [data-lang].show { display: initial; }
+    h1 [data-lang].show, h2 [data-lang].show { display: inline; }
+    p[data-lang].show, div[data-lang].show { display: block; }
+    a[data-lang].show { display: block; }
     @media (max-width: 640px) {
       nav ul { display: none; }
       .hero { padding: 100px 20px 60px; }
@@ -193,130 +138,193 @@
 </head>
 <body>
 
-  <!-- Nav -->
   <nav>
     <div class="inner">
       <a href="#" class="logo"><span>SSJ</span></a>
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#products">Products</a></li>
-        <li><a href="#legal">Legal</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
+      <div class="nav-right">
+        <ul>
+          <li><a href="#about" data-lang="en" class="show">About</a><a href="#about" data-lang="ko">소개</a></li>
+          <li><a href="#products" data-lang="en" class="show">Products</a><a href="#products" data-lang="ko">제품</a></li>
+          <li><a href="#legal" data-lang="en" class="show">Legal</a><a href="#legal" data-lang="ko">약관</a></li>
+          <li><a href="#contact" data-lang="en" class="show">Contact</a><a href="#contact" data-lang="ko">연락처</a></li>
+        </ul>
+        <button class="lang-toggle" onclick="toggleLang()">KO</button>
+      </div>
     </div>
   </nav>
 
-  <!-- Hero -->
   <section class="hero">
     <div class="inner">
       <div class="badge">Sleek Software Journey</div>
-      <h1>We build apps that<br><span class="gradient">make life better.</span></h1>
-      <p>Welcome to our digital realm where innovation thrives through lines of code. With a passion for crafting immersive experiences, we dedicate ourselves to transforming visionary ideas into functional realities.</p>
-      <p>Explore our world of technology where creativity meets precision, driving us to build tomorrow's solutions today. Join us on this journey of coding excellence, where each line we write paves the way for endless possibilities and impactful innovations.</p>
+      <h1>
+        <span data-lang="en" class="show">We build apps that<br><span class="gradient">make life better.</span></span>
+        <span data-lang="ko">더 나은 삶을 위한<br><span class="gradient">앱을 만듭니다.</span></span>
+      </h1>
+      <p data-lang="en" class="show">Welcome to our digital realm where innovation thrives through lines of code. With a passion for crafting immersive experiences, we dedicate ourselves to transforming visionary ideas into functional realities.</p>
+      <p data-lang="ko">코드 한 줄 한 줄에 혁신이 살아 숨 쉬는 디지털 세상에 오신 것을 환영합니다. 몰입감 있는 경험을 만들어내는 열정으로, 비전을 현실로 바꾸는 데 전념하고 있습니다.</p>
+      <p data-lang="en" class="show">Explore our world of technology where creativity meets precision, driving us to build tomorrow's solutions today. Join us on this journey of coding excellence, where each line we write paves the way for endless possibilities and impactful innovations.</p>
+      <p data-lang="ko">창의성과 정밀함이 만나는 기술의 세계를 탐험하세요. 오늘의 코드로 내일의 솔루션을 만들어가는 이 여정에 함께해 주세요.</p>
     </div>
   </section>
 
-  <!-- What I Do -->
   <section id="about">
     <div class="inner fade-in">
-      <div class="section-label">What We Do</div>
-      <h2>Crafting digital solutions<br>that elevate everyday life.</h2>
+      <div class="section-label" data-lang="en">What We Do</div>
+      <div class="section-label" data-lang="ko">우리가 하는 일</div>
+      <h2>
+        <span data-lang="en" class="show">Crafting digital solutions<br>that elevate everyday life.</span>
+        <span data-lang="ko">일상을 변화시키는<br>디지털 솔루션을 만듭니다.</span>
+      </h2>
       <div class="what-grid">
         <div class="what-card">
           <div class="icon">&#9889;</div>
-          <h3>Innovative App Development</h3>
-          <p>Fueled by an insatiable enthusiasm for innovation, we're on an exhilarating quest to craft apps that redefine and elevate everyday experiences.</p>
+          <h3 data-lang="en" class="show">Innovative App Development</h3>
+          <h3 data-lang="ko">혁신적인 앱 개발</h3>
+          <p data-lang="en" class="show">Fueled by an insatiable enthusiasm for innovation, we're on an exhilarating quest to craft apps that redefine and elevate everyday experiences.</p>
+          <p data-lang="ko">혁신에 대한 끊임없는 열정으로, 일상의 경험을 재정의하고 한 단계 끌어올리는 앱을 만들어갑니다.</p>
         </div>
         <div class="what-card">
           <div class="icon">&#10024;</div>
-          <h3>Quality-Driven Engineering</h3>
-          <p>Eagerly diving into the realm of development, our passion lies in creating digital solutions that not only streamline but also enrich and amplify the quality of life.</p>
+          <h3 data-lang="en" class="show">Quality-Driven Engineering</h3>
+          <h3 data-lang="ko">품질 중심 엔지니어링</h3>
+          <p data-lang="en" class="show">Eagerly diving into the realm of development, our passion lies in creating digital solutions that not only streamline but also enrich and amplify the quality of life.</p>
+          <p data-lang="ko">개발의 세계에 깊이 몰입하며, 삶의 질을 풍요롭게 하고 향상시키는 디지털 솔루션을 만드는 데 열정을 쏟고 있습니다.</p>
         </div>
         <div class="what-card">
           <div class="icon">&#127919;</div>
-          <h3>Meaningful Impact</h3>
-          <p>Each app we conceive is a testament to our unwavering commitment to harness technology's power for tangible, meaningful enhancements.</p>
+          <h3 data-lang="en" class="show">Meaningful Impact</h3>
+          <h3 data-lang="ko">의미 있는 영향력</h3>
+          <p data-lang="en" class="show">Each app we conceive is a testament to our unwavering commitment to harness technology's power for tangible, meaningful enhancements.</p>
+          <p data-lang="ko">우리가 만드는 모든 앱은 기술의 힘으로 실질적이고 의미 있는 변화를 만들겠다는 확고한 의지의 증거입니다.</p>
         </div>
         <div class="what-card">
           <div class="icon">&#128640;</div>
-          <h3>Transformative Vision</h3>
-          <p>Join us in this thrilling journey of app creation, where the fusion of boundless enthusiasm and relentless drive fuels the birth of transformative applications, designed to make lives better, simpler, and more vibrant.</p>
+          <h3 data-lang="en" class="show">Transformative Vision</h3>
+          <h3 data-lang="ko">혁신적 비전</h3>
+          <p data-lang="en" class="show">Join us in this thrilling journey of app creation, where the fusion of boundless enthusiasm and relentless drive fuels the birth of transformative applications, designed to make lives better, simpler, and more vibrant.</p>
+          <p data-lang="ko">끝없는 열정과 끈기가 만나 삶을 더 낫고, 더 간편하고, 더 활기차게 만드는 혁신적인 앱이 탄생하는 이 여정에 함께하세요.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Products -->
   <section id="products" class="products-section">
     <div class="inner fade-in">
-      <div class="section-label">Products</div>
-      <h2>Apps we've brought to life.</h2>
+      <div class="section-label" data-lang="en">Products</div>
+      <div class="section-label" data-lang="ko">제품</div>
+      <h2>
+        <span data-lang="en" class="show">Apps we've brought to life.</span>
+        <span data-lang="ko">우리가 만든 앱들.</span>
+      </h2>
       <div class="product-list">
-        <a href="/products/reward-stickers/" class="product-item" style="text-decoration:none;color:inherit;">
+        <a href="/products/reward-stickers/" class="product-item">
           <div class="product-icon sticker">&#127760;</div>
           <div class="product-info">
             <h3>Reward Stickers</h3>
-            <p>A fun and engaging sticker book app that turns everyday achievements into rewarding experiences.</p>
+            <p data-lang="en" class="show">A fun and engaging sticker book app that turns everyday achievements into rewarding experiences.</p>
+            <p data-lang="ko">일상의 성취를 보람찬 경험으로 바꿔주는 재미있는 스티커북 앱.</p>
           </div>
         </a>
         <div class="product-item">
           <div class="product-icon todry">&#128221;</div>
           <div class="product-info">
             <h3>Todry</h3>
-            <p>A streamlined productivity tool designed to help you organize your day with clarity and focus.</p>
+            <p data-lang="en" class="show">A streamlined productivity tool designed to help you organize your day with clarity and focus.</p>
+            <p data-lang="ko">하루를 명확하고 집중적으로 정리할 수 있도록 도와주는 생산성 도구.</p>
           </div>
         </div>
       </div>
-      <p class="coming-soon">...and many more to come. This is just a beginning!</p>
+      <p class="coming-soon" data-lang="en">...and many more to come. This is just a beginning!</p>
+      <p class="coming-soon" data-lang="ko">...그리고 더 많은 앱이 준비 중입니다. 이건 시작에 불과합니다!</p>
     </div>
   </section>
 
-  <!-- Legal -->
   <section id="legal">
     <div class="inner fade-in">
-      <div class="section-label">Legal</div>
-      <h2>Terms &amp; Policies</h2>
+      <div class="section-label" data-lang="en">Legal</div>
+      <div class="section-label" data-lang="ko">약관</div>
+      <h2>
+        <span data-lang="en" class="show">Terms &amp; Policies</span>
+        <span data-lang="ko">이용약관 &amp; 정책</span>
+      </h2>
       <div class="legal-grid">
         <div class="legal-card">
-          <h3>Terms of Use</h3>
-          <a href="/terms/">Terms of Use / 이용약관 <span class="arrow">&rarr;</span></a>
+          <h3 data-lang="en" class="show">Terms of Use</h3>
+          <h3 data-lang="ko">이용약관</h3>
+          <a href="/terms/">
+            <span data-lang="en" class="show">View Terms of Use</span>
+            <span data-lang="ko">이용약관 보기</span>
+            <span class="arrow">&rarr;</span>
+          </a>
         </div>
         <div class="legal-card">
-          <h3>Privacy Policy</h3>
-          <a href="/privacy/">Privacy Policy / 개인정보처리방침 <span class="arrow">&rarr;</span></a>
+          <h3 data-lang="en" class="show">Privacy Policy</h3>
+          <h3 data-lang="ko">개인정보처리방침</h3>
+          <a href="/privacy/">
+            <span data-lang="en" class="show">View Privacy Policy</span>
+            <span data-lang="ko">개인정보처리방침 보기</span>
+            <span class="arrow">&rarr;</span>
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Contact -->
   <section id="contact" class="contact-section">
     <div class="inner fade-in">
-      <div class="section-label">Contact</div>
-      <h2>Let's build something great.</h2>
-      <p class="sub">Have a question or want to work together? Reach out anytime.</p>
+      <div class="section-label" data-lang="en">Contact</div>
+      <div class="section-label" data-lang="ko">연락처</div>
+      <h2>
+        <span data-lang="en" class="show">Let's build something great.</span>
+        <span data-lang="ko">함께 만들어 갈까요?</span>
+      </h2>
+      <p class="sub" data-lang="en">Have a question or want to work together? Reach out anytime.</p>
+      <p class="sub" data-lang="ko">궁금한 점이 있거나 함께 일하고 싶으신가요? 언제든 연락주세요.</p>
       <a href="mailto:cs.generated@gmail.com" class="contact-email">cs.generated@gmail.com</a>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer>
     <p>&copy; 2024 SSJ - Sleek Software Journey. All rights reserved.</p>
     <p style="margin-top: 8px;">
-      <a href="/terms/">Terms of Use</a>
-      <a href="/privacy/">Privacy Policy</a>
+      <a href="/terms/"><span data-lang="en" class="show">Terms of Use</span><span data-lang="ko">이용약관</span></a>
+      <a href="/privacy/"><span data-lang="en" class="show">Privacy Policy</span><span data-lang="ko">개인정보처리방침</span></a>
     </p>
   </footer>
 
   <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+    // Language detection: check languages list + timezone fallback
+    function detectKo() {
+      var langs = (navigator.languages || [navigator.language || navigator.userLanguage || 'en']);
+      for (var i = 0; i < langs.length; i++) {
+        if (langs[i].toLowerCase().indexOf('ko') === 0) return true;
+      }
+      try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Seoul') return true; } catch(e) {}
+      return false;
+    }
+
+    var currentLang = detectKo() ? 'ko' : 'en';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-lang]').forEach(function(el) {
+        el.classList.toggle('show', el.getAttribute('data-lang') === lang);
       });
+      document.querySelector('.lang-toggle').textContent = lang === 'ko' ? 'EN' : 'KO';
+    }
+
+    function toggleLang() {
+      applyLang(currentLang === 'ko' ? 'en' : 'ko');
+    }
+
+    applyLang(currentLang);
+
+    // Fade-in observer
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('visible'); });
     }, { threshold: 0.15 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
   </script>
 
 </body>

@@ -285,9 +285,15 @@
       document.getElementById('btn-ko').classList.toggle('active', lang === 'ko');
       document.documentElement.lang = lang;
     }
-    var langs = (navigator.languages || [navigator.language || navigator.userLanguage || 'en']).map(function(l){ return l.toLowerCase(); });
-    var isKo = langs.some(function(l){ return l.startsWith('ko'); });
-    switchLang(isKo ? 'ko' : 'en');
+    function detectKo() {
+      var langs = (navigator.languages || [navigator.language || navigator.userLanguage || 'en']);
+      for (var i = 0; i < langs.length; i++) {
+        if (langs[i].toLowerCase().indexOf('ko') === 0) return true;
+      }
+      try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Seoul') return true; } catch(e) {}
+      return false;
+    }
+    switchLang(detectKo() ? 'ko' : 'en');
   </script>
 </body>
 </html>
