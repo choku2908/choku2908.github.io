@@ -326,8 +326,16 @@
 
     applyLang(currentLang);
 
-    // Copy email
+    // Copy email (desktop) or open mail app (mobile)
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
     function copyEmail() {
+      if (isMobile()) {
+        window.location.href = 'mailto:cs.generated@gmail.com';
+        return;
+      }
       navigator.clipboard.writeText('cs.generated@gmail.com').then(function() {
         var toast = document.getElementById('copyToast');
         toast.textContent = currentLang === 'ko' ? '클립보드에 복사되었습니다!' : 'Copied to clipboard!';
