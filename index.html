@@ -112,9 +112,14 @@
     .contact-email {
       display: inline-block; padding: 16px 40px; border-radius: 12px;
       background: var(--accent); color: #fff; font-size: 16px; font-weight: 600;
-      text-decoration: none; transition: opacity .2s, transform .2s;
+      border: none; cursor: pointer; transition: opacity .2s, transform .2s;
     }
     .contact-email:hover { opacity: .9; transform: scale(1.03); }
+    .copy-toast {
+      display: block; margin-top: 12px; font-size: 14px; color: var(--accent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .copy-toast.show { opacity: 1; }
     footer {
       border-top: 1px solid var(--border); padding: 40px 24px; text-align: center;
       font-size: 13px; color: var(--text-muted);
@@ -280,7 +285,8 @@
       </h2>
       <p class="sub" data-lang="en">Have a question or want to work together? Reach out anytime.</p>
       <p class="sub" data-lang="ko">궁금한 점이 있거나 함께 일하고 싶으신가요? 언제든 연락주세요.</p>
-      <a href="mailto:cs.generated@gmail.com" class="contact-email">cs.generated@gmail.com</a>
+      <button class="contact-email" onclick="copyEmail()">cs.generated@gmail.com</button>
+      <span class="copy-toast" id="copyToast"></span>
     </div>
   </section>
 
@@ -319,6 +325,16 @@
     }
 
     applyLang(currentLang);
+
+    // Copy email
+    function copyEmail() {
+      navigator.clipboard.writeText('cs.generated@gmail.com').then(function() {
+        var toast = document.getElementById('copyToast');
+        toast.textContent = currentLang === 'ko' ? '클립보드에 복사되었습니다!' : 'Copied to clipboard!';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2000);
+      });
+    }
 
     // Fade-in observer
     var observer = new IntersectionObserver(function(entries) {
