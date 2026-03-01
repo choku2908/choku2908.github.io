@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account Deletion - Reward Stickers</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #111; --bg-card: #1a1a1a; --text: #d4d4d4; --text-muted: #888;
+      --accent: #6c63ff; --accent-glow: rgba(108,99,255,0.3); --border: #2a2a2a;
+      --green: #34d399; --red: #ef4444; --red-glow: rgba(239,68,68,0.3);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7; -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(17,17,17,0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    nav .inner {
+      max-width: 800px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    nav .nav-left { display: flex; align-items: center; gap: 16px; }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+    nav a:hover { color: #fff; }
+    nav .logo { font-size: 18px; font-weight: 700; color: #fff; }
+    nav .logo span { color: var(--accent); }
+    nav .sep { color: #333; }
+    .lang-toggle {
+      padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+      border: 1px solid #333; color: #888; background: transparent; cursor: pointer; transition: all .2s;
+    }
+    .lang-toggle:hover { border-color: var(--accent); color: #fff; }
+
+    main { max-width: 800px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    .hero-icon {
+      width: 80px; height: 80px; border-radius: 20px;
+      background: linear-gradient(135deg, var(--red), #f97316);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px; margin-bottom: 24px;
+    }
+    h1 { font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 16px; letter-spacing: -1px; }
+    .subtitle { font-size: 16px; color: var(--text-muted); margin-bottom: 40px; }
+
+    .warning-box {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+    .warning-box h3 { color: var(--red); font-size: 15px; margin-bottom: 8px; }
+    .warning-box ul { margin: 0 0 0 20px; }
+    .warning-box li { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; }
+    .warning-box a { color: var(--accent); text-decoration: underline; }
+
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .form-card h2 {
+      font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 24px;
+    }
+
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: block; font-size: 14px; font-weight: 600;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .field input[type="email"] {
+      width: 100%; padding: 12px 16px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; color: #fff; font-size: 16px;
+      outline: none; transition: border-color .2s;
+    }
+    .field input[type="email"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .field input[type="email"]::placeholder { color: #555; }
+
+    .checkbox-field {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 24px; cursor: pointer;
+    }
+    .checkbox-field input[type="checkbox"] {
+      margin-top: 3px; accent-color: var(--red);
+      width: 18px; height: 18px; flex-shrink: 0;
+    }
+    .checkbox-field span { font-size: 14px; color: var(--text-muted); }
+
+    .submit-btn {
+      width: 100%; padding: 14px;
+      background: var(--red); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .submit-btn:hover:not(:disabled) {
+      background: #dc2626;
+      box-shadow: 0 0 20px var(--red-glow);
+    }
+    .submit-btn:disabled {
+      opacity: 0.4; cursor: not-allowed;
+    }
+
+    .result-msg {
+      margin-top: 16px; padding: 14px 18px;
+      border-radius: 10px; font-size: 14px;
+      display: none;
+    }
+    .result-msg.success {
+      display: block;
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.3);
+      color: var(--green);
+    }
+    .result-msg.error {
+      display: block;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red);
+    }
+
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .info-section { margin-top: 40px; }
+    .info-section h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .info-section p { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+    .info-section a { color: var(--accent); text-decoration: underline; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px; text-align: center;
+      font-size: 13px; color: #555;
+    }
+
+    [data-lang] { display: none; }
+    [data-lang].show { display: initial; }
+    h1 [data-lang].show, h2 [data-lang].show, h3 [data-lang].show { display: inline; }
+    p[data-lang].show, div[data-lang].show, ul[data-lang].show,
+    label[data-lang].show, span[data-lang].show { display: block; }
+    .checkbox-field span[data-lang].show { display: inline; }
+    li[data-lang].show { display: list-item; }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 28px; }
+      .form-card { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <div class="nav-left">
+        <a href="/" class="logo"><span>SSJ</span></a>
+        <span class="sep">/</span>
+        <a href="/products/reward-stickers/">Reward Stickers</a>
+        <span class="sep">/</span>
+        <a href="/products/reward-stickers/delete-account/">
+          <span data-lang="en">Delete Account</span>
+          <span data-lang="ko">계정 삭제</span>
+        </a>
+      </div>
+      <button class="lang-toggle" onclick="toggleLang()">KO</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero-icon">&#128465;</div>
+
+    <h1>
+      <span data-lang="en">Account Deletion</span>
+      <span data-lang="ko">계정 삭제</span>
+    </h1>
+
+    <p class="subtitle" data-lang="en">
+      Request deletion of your Reward Stickers account and all associated data.
+    </p>
+    <p class="subtitle" data-lang="ko">
+      칭찬 스티커 계정 및 모든 관련 데이터의 삭제를 요청합니다.
+    </p>
+
+    <!-- Warning box -->
+    <div class="warning-box">
+      <h3>
+        <span data-lang="en">&#9888; Before you proceed</span>
+        <span data-lang="ko">&#9888; 삭제 전 확인사항</span>
+      </h3>
+      <ul data-lang="en">
+        <li>All your boards, stickers, and shared data will be permanently deleted.</li>
+        <li>This action cannot be undone.</li>
+        <li>If you have an active subscription, please cancel it first from
+          <a href="https://play.google.com/store/account/subscriptions" target="_blank">Google Play Subscriptions</a>.
+        </li>
+      </ul>
+      <ul data-lang="ko">
+        <li>모든 보드, 스티커, 공유 데이터가 영구적으로 삭제됩니다.</li>
+        <li>이 작업은 되돌릴 수 없습니다.</li>
+        <li>구독 중인 경우, 먼저
+          <a href="https://play.google.com/store/account/subscriptions" target="_blank">Google Play 구독 관리</a>에서 구독을 해지해 주세요.
+        </li>
+      </ul>
+    </div>
+
+    <!-- Form -->
+    <div class="form-card">
+      <h2>
+        <span data-lang="en">Delete My Account</span>
+        <span data-lang="ko">내 계정 삭제하기</span>
+      </h2>
+
+      <form id="deleteForm" onsubmit="return handleSubmit(event)">
+        <div class="field">
+          <label data-lang="en" for="email">Google Account Email (used to sign in to Reward Stickers)</label>
+          <label data-lang="ko" for="email">Google 계정 이메일 (칭찬 스티커 로그인에 사용한 계정)</label>
+          <input type="email" id="email" name="email" required
+            placeholder="example@gmail.com"
+            autocomplete="email">
+        </div>
+
+        <label class="checkbox-field">
+          <input type="checkbox" id="confirmCheck" required onchange="updateButton()">
+          <span data-lang="en">I understand that all my data will be permanently deleted and this cannot be undone.</span>
+          <span data-lang="ko">모든 데이터가 영구적으로 삭제되며 되돌릴 수 없음을 이해합니다.</span>
+        </label>
+
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>
+          <span data-lang="en" id="btnTextEn">Delete Account</span>
+          <span data-lang="ko" id="btnTextKo">계정 삭제 요청</span>
+        </button>
+      </form>
+
+      <div class="result-msg" id="resultMsg"></div>
+    </div>
+
+    <!-- Info section -->
+    <div class="info-section">
+      <h3>
+        <span data-lang="en">What data will be deleted?</span>
+        <span data-lang="ko">어떤 데이터가 삭제되나요?</span>
+      </h3>
+      <p data-lang="en">
+        Your account, all boards you created, sticker data, board categories,
+        shared board connections, uploaded images, and push notification settings
+        will be permanently removed from our servers.
+      </p>
+      <p data-lang="ko">
+        계정 정보, 생성한 모든 보드, 스티커 데이터, 보드 카테고리,
+        공유 보드 연결, 업로드된 이미지, 푸시 알림 설정이
+        서버에서 영구적으로 삭제됩니다.
+      </p>
+
+      <h3 style="margin-top: 24px;">
+        <span data-lang="en">Need help?</span>
+        <span data-lang="ko">도움이 필요하신가요?</span>
+      </h3>
+      <p data-lang="en">
+        Contact us at <a href="mailto:cs.generated@gmail.com">cs.generated@gmail.com</a>
+      </p>
+      <p data-lang="ko">
+        <a href="mailto:cs.generated@gmail.com">cs.generated@gmail.com</a>으로 문의해 주세요.
+      </p>
+    </div>
+  </main>
+
+  <footer>&copy; 2024 SSJ - Sleek Software Journey</footer>
+
+  <script>
+    // ---- Language toggle (same as other pages) ----
+    function detectKo() {
+      var langs = (navigator.languages || [navigator.language || navigator.userLanguage || 'en']);
+      for (var i = 0; i < langs.length; i++) {
+        if (langs[i].toLowerCase().indexOf('ko') === 0) return true;
+      }
+      try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Seoul') return true; } catch(e) {}
+      return false;
+    }
+
+    var currentLang = detectKo() ? 'ko' : 'en';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-lang]').forEach(function(el) {
+        el.classList.toggle('show', el.getAttribute('data-lang') === lang);
+      });
+      document.querySelector('.lang-toggle').textContent = lang === 'ko' ? 'EN' : 'KO';
+    }
+
+    function toggleLang() {
+      applyLang(currentLang === 'ko' ? 'en' : 'ko');
+    }
+
+    applyLang(currentLang);
+
+    // ---- Form logic ----
+    var CLOUD_FUNCTION_URL = 'https://us-central1-reward-stickers.cloudfunctions.net/requestAccountDeletion';
+
+    function updateButton() {
+      document.getElementById('submitBtn').disabled = !document.getElementById('confirmCheck').checked;
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+
+      var email = document.getElementById('email').value.trim();
+      if (!email) return false;
+
+      var btn = document.getElementById('submitBtn');
+      var resultMsg = document.getElementById('resultMsg');
+      resultMsg.className = 'result-msg';
+      resultMsg.style.display = 'none';
+
+      // Confirm dialog
+      var confirmText = currentLang === 'ko'
+        ? '정말로 ' + email + ' 계정을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.'
+        : 'Are you sure you want to delete the account for ' + email + '?\nThis action cannot be undone.';
+      if (!confirm(confirmText)) return false;
+
+      // Loading state
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>' +
+        (currentLang === 'ko' ? '처리 중...' : 'Processing...');
+
+      fetch(CLOUD_FUNCTION_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+      .then(function(res) { return res.json().then(function(data) { return { status: res.status, data: data }; }); })
+      .then(function(result) {
+        if (result.status === 200) {
+          resultMsg.className = 'result-msg success';
+          resultMsg.innerHTML = currentLang === 'ko'
+            ? '&#10003; 계정 삭제 요청이 완료되었습니다. 잠시 후 모든 데이터가 삭제됩니다.'
+            : '&#10003; Account deletion request has been submitted. All data will be deleted shortly.';
+          document.getElementById('deleteForm').reset();
+          btn.disabled = true;
+        } else if (result.status === 404) {
+          resultMsg.className = 'result-msg error';
+          resultMsg.innerHTML = currentLang === 'ko'
+            ? '&#10007; 해당 이메일로 등록된 계정을 찾을 수 없습니다.'
+            : '&#10007; No account found with this email address.';
+          resetButton();
+        } else {
+          throw new Error(result.data.error || 'Unknown error');
+        }
+      })
+      .catch(function(err) {
+        resultMsg.className = 'result-msg error';
+        resultMsg.innerHTML = currentLang === 'ko'
+          ? '&#10007; 오류가 발생했습니다. 나중에 다시 시도하거나 cs.generated@gmail.com으로 문의해 주세요.'
+          : '&#10007; An error occurred. Please try again later or contact cs.generated@gmail.com';
+        resetButton();
+      });
+
+      return false;
+    }
+
+    function resetButton() {
+      var btn = document.getElementById('submitBtn');
+      btn.innerHTML =
+        '<span data-lang="en" class="' + (currentLang === 'en' ? 'show' : '') + '">Delete Account</span>' +
+        '<span data-lang="ko" class="' + (currentLang === 'ko' ? 'show' : '') + '">계정 삭제 요청</span>';
+      btn.disabled = !document.getElementById('confirmCheck').checked;
+    }
+  </script>
+</body>
+</html>
