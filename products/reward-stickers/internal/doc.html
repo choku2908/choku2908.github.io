@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Document - Internal Docs</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #111; --bg-card: #1a1a1a; --text: #d4d4d4; --text-muted: #888;
+      --accent: #6c63ff; --accent-glow: rgba(108,99,255,0.3); --border: #2a2a2a;
+      --green: #34d399; --red: #ef4444;
+    }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7; -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(17,17,17,0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    nav .inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    nav .nav-left { display: flex; align-items: center; gap: 16px; }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+    nav a:hover { color: #fff; }
+    nav .logo { font-size: 18px; font-weight: 700; color: #fff; }
+    nav .logo span { color: var(--accent); }
+    nav .sep { color: #333; }
+    nav .nav-right { display: flex; align-items: center; gap: 12px; }
+    .doc-switch {
+      padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--border); color: var(--text-muted); background: transparent;
+      cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .doc-switch:hover { border-color: var(--accent); color: #fff; }
+    .doc-switch.active { border-color: var(--accent); color: #fff; background: rgba(108,99,255,0.15); }
+    .btn-logout {
+      padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      border: 1px solid #333; color: #888; background: transparent; cursor: pointer; transition: all .2s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    main {
+      max-width: 900px; margin: 0 auto; padding: 32px 24px 80px;
+      min-height: calc(100vh - 65px - 77px);
+    }
+
+    /* Loading */
+    .state { display: none; text-align: center; padding-top: 120px; }
+    .state.active { display: block; }
+    .spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin .8s linear infinite; margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Markdown content */
+    #docContent {
+      display: none;
+    }
+    #docContent.active {
+      display: block;
+    }
+    #docContent h1 { font-size: 28px; font-weight: 800; color: #fff; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    #docContent h1:first-child { margin-top: 0; }
+    #docContent h2 { font-size: 22px; font-weight: 700; color: #fff; margin: 28px 0 12px; }
+    #docContent h3 { font-size: 18px; font-weight: 600; color: #fff; margin: 24px 0 8px; }
+    #docContent h4 { font-size: 16px; font-weight: 600; color: #e0e0e0; margin: 20px 0 8px; }
+    #docContent p { margin: 8px 0 12px; color: var(--text); }
+    #docContent ul, #docContent ol { margin: 8px 0 12px 24px; }
+    #docContent li { margin-bottom: 6px; color: var(--text); }
+    #docContent li ul, #docContent li ol { margin-top: 6px; }
+    #docContent strong { color: #fff; }
+    #docContent a { color: var(--accent); text-decoration: none; }
+    #docContent a:hover { text-decoration: underline; }
+    #docContent hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    #docContent blockquote {
+      border-left: 3px solid var(--accent); margin: 12px 0;
+      padding: 8px 16px; background: rgba(108,99,255,0.06); border-radius: 0 8px 8px 0;
+      color: var(--text-muted);
+    }
+
+    /* Code */
+    #docContent code {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px;
+      font-size: 0.9em; color: #e0e0e0;
+    }
+    #docContent pre {
+      background: #0d0d0d; border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px 20px; margin: 12px 0; overflow-x: auto;
+    }
+    #docContent pre code {
+      background: none; padding: 0; font-size: 13px; line-height: 1.6;
+    }
+
+    /* Tables */
+    #docContent table {
+      width: 100%; border-collapse: collapse; margin: 12px 0;
+      font-size: 14px;
+    }
+    #docContent th {
+      background: var(--bg-card); color: #fff; font-weight: 600;
+      text-align: left; padding: 10px 14px;
+      border: 1px solid var(--border);
+    }
+    #docContent td {
+      padding: 8px 14px; border: 1px solid var(--border);
+      color: var(--text);
+    }
+    #docContent tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* Mermaid placeholder */
+    #docContent .mermaid {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px; margin: 12px 0;
+      text-align: center;
+    }
+
+    .meta-info {
+      font-size: 13px; color: var(--text-muted); margin-bottom: 24px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px; text-align: center;
+      font-size: 13px; color: #555;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #docContent table { font-size: 12px; }
+      #docContent th, #docContent td { padding: 6px 8px; }
+      nav .nav-right { gap: 6px; }
+      .doc-switch, .btn-logout { padding: 4px 10px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <div class="nav-left">
+        <a href="/products/reward-stickers/" class="logo"><span>SSJ</span></a>
+        <span class="sep">/</span>
+        <a href="index.html">Internal</a>
+        <span class="sep">/</span>
+        <span id="navDocName" style="color:#fff;font-size:14px;"></span>
+      </div>
+      <div class="nav-right">
+        <a href="doc.html?id=prd" class="doc-switch" id="switchPrd">PRD</a>
+        <a href="doc.html?id=trd" class="doc-switch" id="switchTrd">TRD</a>
+        <button class="btn-logout" onclick="signOut()">Sign Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Loading -->
+    <div class="state active" id="stateLoading">
+      <div class="spinner"></div>
+      <p style="color:var(--text-muted);font-size:14px;">Loading document...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="state" id="stateError">
+      <p style="font-size:48px;margin-bottom:16px;">&#9888;&#65039;</p>
+      <p style="font-size:18px;font-weight:600;color:var(--red);margin-bottom:8px;">Error</p>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:24px;" id="errorDetail"></p>
+      <a href="index.html" style="padding:10px 24px;border-radius:10px;font-size:14px;font-weight:600;border:1px solid var(--border);color:var(--text);background:var(--bg-card);text-decoration:none;">Back to Docs</a>
+    </div>
+
+    <!-- Document -->
+    <div id="docContent"></div>
+  </main>
+
+  <footer>&copy; 2024 SSJ - Sleek Software Journey</footer>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <!-- Marked.js for Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+
+  <script src="config.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const docId = params.get('id');
+    const docNames = { prd: 'PRD', trd: 'TRD' };
+
+    function showState(id) {
+      document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
+      var el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+
+    function signOut() {
+      auth.signOut().then(() => { window.location.href = 'index.html'; });
+    }
+
+    function initNav() {
+      var name = docNames[docId] || docId;
+      document.getElementById('navDocName').textContent = name;
+      document.title = name + ' - Internal Docs';
+      if (docId === 'prd') document.getElementById('switchPrd').classList.add('active');
+      if (docId === 'trd') document.getElementById('switchTrd').classList.add('active');
+    }
+
+    async function loadDocument() {
+      if (!docId) {
+        window.location.href = 'index.html';
+        return;
+      }
+      initNav();
+
+      try {
+        var snap = await db.collection('internal_docs').doc(docId).get();
+        if (!snap.exists) {
+          document.getElementById('errorDetail').textContent =
+            'Document "' + docId + '" not found. Run upload-docs.js first.';
+          showState('stateError');
+          return;
+        }
+
+        var data = snap.data();
+        var html = marked.parse(data.content || '');
+        var container = document.getElementById('docContent');
+        container.innerHTML = '';
+
+        if (data.updated_at) {
+          var meta = document.createElement('div');
+          meta.className = 'meta-info';
+          var date = data.updated_at.toDate ? data.updated_at.toDate() : new Date(data.updated_at);
+          meta.textContent = 'Last updated: ' + date.toLocaleString('ko-KR');
+          container.appendChild(meta);
+        }
+
+        var content = document.createElement('div');
+        content.innerHTML = html;
+        container.appendChild(content);
+
+        showState(null);
+        container.classList.add('active');
+      } catch (err) {
+        if (err.code === 'permission-denied') {
+          window.location.href = 'index.html';
+        } else {
+          document.getElementById('errorDetail').textContent = err.message;
+          showState('stateError');
+        }
+      }
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        loadDocument();
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>

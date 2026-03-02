@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Internal Docs - Reward Stickers</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #111; --bg-card: #1a1a1a; --text: #d4d4d4; --text-muted: #888;
+      --accent: #6c63ff; --accent-glow: rgba(108,99,255,0.3); --border: #2a2a2a;
+      --green: #34d399; --red: #ef4444;
+    }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7; -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(17,17,17,0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    nav .inner {
+      max-width: 800px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    nav .nav-left { display: flex; align-items: center; gap: 16px; }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+    nav a:hover { color: #fff; }
+    nav .logo { font-size: 18px; font-weight: 700; color: #fff; }
+    nav .logo span { color: var(--accent); }
+    nav .sep { color: #333; }
+    .btn-logout {
+      padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      border: 1px solid #333; color: #888; background: transparent; cursor: pointer; transition: all .2s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    main {
+      max-width: 800px; margin: 0 auto; padding: 48px 24px 80px;
+      min-height: calc(100vh - 65px - 77px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+
+    /* States */
+    .state { display: none; width: 100%; text-align: center; }
+    .state.active { display: block; }
+
+    /* Loading */
+    .spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin .8s linear infinite; margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Login */
+    h1 { font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; }
+
+    .btn-google {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 12px 28px; border-radius: 12px; font-size: 15px; font-weight: 600;
+      border: 1px solid var(--border); color: #fff; background: var(--bg-card);
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-google:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px var(--accent-glow); }
+    .btn-google svg { width: 20px; height: 20px; }
+
+    /* Doc list */
+    .doc-list { width: 100%; max-width: 500px; margin: 0 auto; }
+    .doc-list h2 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; text-align: left; }
+    .user-info { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; text-align: left; }
+    .doc-link {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 24px;
+      text-decoration: none; color: var(--text); margin-bottom: 12px;
+      transition: border-color .3s, transform .3s;
+    }
+    .doc-link:hover { border-color: var(--accent); transform: translateX(4px); }
+    .doc-link .doc-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .doc-link .doc-icon.prd { background: linear-gradient(135deg, var(--accent), #a855f7); }
+    .doc-link .doc-icon.trd { background: linear-gradient(135deg, var(--green), #06b6d4); }
+    .doc-link .doc-info strong { color: #fff; font-size: 16px; }
+    .doc-link .doc-info p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Error */
+    .error-icon { font-size: 48px; margin-bottom: 16px; }
+    .error-msg { font-size: 18px; font-weight: 600; color: var(--red); margin-bottom: 8px; }
+    .error-detail { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+    .btn-back {
+      padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600;
+      border: 1px solid var(--border); color: var(--text); background: var(--bg-card);
+      cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .btn-back:hover { border-color: var(--accent); color: #fff; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px; text-align: center;
+      font-size: 13px; color: #555;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <div class="nav-left">
+        <a href="/products/reward-stickers/" class="logo"><span>SSJ</span></a>
+        <span class="sep">/</span>
+        <a href="/products/reward-stickers/">Reward Stickers</a>
+        <span class="sep">/</span>
+        <a href="/products/reward-stickers/internal/" style="color:#fff;">Internal</a>
+      </div>
+      <button class="btn-logout" id="btnLogout" style="display:none;" onclick="signOut()">Sign Out</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Loading -->
+    <div class="state active" id="stateLoading">
+      <div class="spinner"></div>
+      <p style="color:var(--text-muted);font-size:14px;">Loading...</p>
+    </div>
+
+    <!-- Login -->
+    <div class="state" id="stateLogin">
+      <h1>Internal Docs</h1>
+      <p class="subtitle">Sign in with Google to access project documentation.</p>
+      <button class="btn-google" onclick="signInWithGoogle()">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Sign in with Google
+      </button>
+    </div>
+
+    <!-- Authorized - Doc List -->
+    <div class="state" id="stateDocs">
+      <div class="doc-list">
+        <h2>Project Documents</h2>
+        <p class="user-info" id="userInfo"></p>
+        <a href="doc.html?id=prd" class="doc-link">
+          <div class="doc-icon prd">P</div>
+          <div class="doc-info">
+            <strong>PRD</strong>
+            <p>Product Requirements Document</p>
+          </div>
+        </a>
+        <a href="doc.html?id=trd" class="doc-link">
+          <div class="doc-icon trd">T</div>
+          <div class="doc-info">
+            <strong>TRD</strong>
+            <p>Technical Requirements Document</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Access Denied -->
+    <div class="state" id="stateDenied">
+      <div class="error-icon">&#128683;</div>
+      <p class="error-msg">Access Denied</p>
+      <p class="error-detail" id="deniedDetail">Your account is not authorized to view internal documents.</p>
+      <button class="btn-back" onclick="signOut()">Sign Out</button>
+    </div>
+
+    <!-- Error -->
+    <div class="state" id="stateError">
+      <div class="error-icon">&#9888;&#65039;</div>
+      <p class="error-msg">Error</p>
+      <p class="error-detail" id="errorDetail"></p>
+      <button class="btn-back" onclick="location.reload()">Retry</button>
+    </div>
+  </main>
+
+  <footer>&copy; 2024 SSJ - Sleek Software Journey</footer>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script src="config.js"></script>
+  <script>
+    function showState(id) {
+      document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.getElementById('btnLogout').style.display =
+        (id === 'stateDocs') ? 'block' : 'none';
+    }
+
+    function signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(err => {
+        document.getElementById('errorDetail').textContent = err.message;
+        showState('stateError');
+      });
+    }
+
+    function signOut() {
+      auth.signOut().then(() => showState('stateLogin'));
+    }
+
+    async function checkAccess(user) {
+      try {
+        // Try reading to verify access — permission-denied if not in allowed_emails
+        await db.collection('internal_docs').doc('prd').get();
+        document.getElementById('userInfo').textContent = user.email;
+        showState('stateDocs');
+      } catch (err) {
+        if (err.code === 'permission-denied') {
+          document.getElementById('deniedDetail').textContent =
+            `${user.email} is not authorized to view internal documents.`;
+          showState('stateDenied');
+        } else {
+          document.getElementById('errorDetail').textContent = err.message;
+          showState('stateError');
+        }
+      }
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        checkAccess(user);
+      } else {
+        showState('stateLogin');
+      }
+    });
+  </script>
+</body>
+</html>
