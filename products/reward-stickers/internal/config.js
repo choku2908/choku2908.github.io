@@ -1,11 +1,11 @@
-// TODO: Replace with your Firebase config from Firebase Console
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCHNSWZJc3UbcEMJj2ChPpxBii7sWPku2c",
+  authDomain: "reward-stickers.firebaseapp.com",
+  projectId: "reward-stickers",
+  storageBucket: "reward-stickers.appspot.com",
+  messagingSenderId: "632242533909",
+  appId: "1:632242533909:web:2d3975181e18c01eb0801c",
+  measurementId: "G-LN8T9VJSBD"
 };
 
 firebase.initializeApp(firebaseConfig);
